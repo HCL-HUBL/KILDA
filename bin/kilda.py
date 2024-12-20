@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 
 global VERSION
-VERSION = "1.3.0"
+VERSION = "1.2.0"
 
 
 def print_version():
