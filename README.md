@@ -46,7 +46,7 @@ The following needs to be installed on your machine:
 
 - [Nextflow](https://www.nextflow.io/docs/latest/install.html) (v21+ required)
 
-- [Singularity](https://docs.sylabs.io/guides/3.0/user-guide/installation.html)
+- [Singularity](https://docs.sylabs.io/guides/3.0/user-guide/installation.html) __or__ [Apptainer](https://apptainer.org/docs/admin/main/installation.html)
 
 *Note: The scripts were developed and tested on Linux (Debian release 11) using nextflow v22.04.5 and Python v3.9.2.*
 
@@ -80,7 +80,7 @@ apptainer build kiv2_20240530_0.2.sif kiv2_20240530.def
 
 cd ./test_dataset/
 
-nextflow-22.04.5-all run ../kilda.nf -c kilda_test.conf
+nextflow run ../kilda.nf -c kilda_test.conf
 ```
 
 The analysis should run in a few minutes, and KILDA output will be available under: *./results/kilda_kiv2_CNs/kilda_kiv2.CNs*
@@ -109,11 +109,11 @@ HG02601 27.94   9       0       5       1       6       0       4
 
 The pipeline is centralised around [kilda.nf](./kilda.nf).
 
-First, move to KILDA's installation directory and pull the [Singularity image](https://cloud.sylabs.io/library/mcorentin/kilda/kiv2_20240530):
+First, move to KILDA's installation directory and build the Apptainer image:
 
 ```shell
 cd /path/to/kilda/
-singularity pull library://mcorentin/kilda/kiv2_20240530:0.2
+apptainer build kiv2_20240530_0.2.sif kiv2_20240530.def
 ```
 
 Then:
@@ -244,9 +244,9 @@ samtools collate -f --threads 20 -O -u --no-PG --reference reference.fasta sampl
 
 This python script is run as part of *kilda.nf* but can be run independently if needed. See [dependencies](#dependencies) for the list of packages to install.
 
-Python script to estimate the number of KIV2 repeats, based on the kmer occurrences counted with [kilda.nf](#kilda)
+Python script to estimate the number of KIV2 repeats, based on the kmer occurrences counted with [kilda.nf](#quick-start)
 
-This is run as part of [kilda.nf](#kilda-a), but can be launched independently.
+This is run as part of [kilda.nf](#quick-start), but can be launched independently.
 
 #### Usage
 
@@ -269,6 +269,12 @@ Other:
      -V/--version         Print the version and exit.
 ```
 
+You can run it from within the image:
+
+```shell
+apptainer exec kiv2_20240530_0.2.sif ./bin/kilda.py 
+```
+
 #### Input
 
 The list of counts files (option -c) should contain two columns (tab delimited), *ID* and *path to the counts file*:
@@ -281,7 +287,7 @@ S5	/path/to/counts/S5.counts
 ```
 
 Each counts file should contain 2 columns (tab delimited): *kmer* and *occurrence*, and can be generated using "jellyfish dump".
-```
+```shell
 k=31
 sample_id="S1"
 
@@ -292,7 +298,7 @@ jellyfish count -t 6 -m ${k} -s 100M -C -o ./counts/${sample_id}_${k}mer <(zcat 
 jellyfish dump ./counts/${sample_id}_${k}mer -c -t > .counts/${sample_id}.counts
 ```
 
-The lists of kmers (options -k and -l) should be in txt format, one kmer per line. This can be generated with *kilda.nf* see ["kmer DB"](#kmer-db)
+The lists of kmers (options -k and -l) should be in txt format, one kmer per line. This can be generated with *kilda.nf* see ["Creating a new kmer DB"](#creating-a-new-kmer-db)
 
 ```
 GAAACCATTTTTCCATGTCTC
