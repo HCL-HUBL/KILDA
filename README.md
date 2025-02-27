@@ -103,7 +103,7 @@ HG02601 27.94   9       0       5       1       6       0       4
 
 *rsxxx_alt*: the occurrence of kmers representing rsxxx alternative allele
 
-*quantile*: which decile the sample belongs to within this group
+*quantile*: The sample decile (in term of KIV-2 repeats), between 0 and 9, computed against all the other samples
 
 ## Quick start
 
