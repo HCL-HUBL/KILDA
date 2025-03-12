@@ -23,6 +23,8 @@ process ExtractFastaFromBed {
 }
 
 process CountKmersRegion {
+    label 'DB_creation'
+
     input:
         path(region_fasta)
         
@@ -40,6 +42,8 @@ process CountKmersRegion {
 
 
 process FilterOnOccurence {
+    label 'DB_creation'
+
     input:
         path(kmers)
         val(occurence)
@@ -58,6 +62,8 @@ process FilterOnOccurence {
 
 
 process CountKmersOutsideRegion {
+    label 'DB_creation'
+
     input:
         path(fasta)
         path(fai)
@@ -83,6 +89,8 @@ process CountKmersOutsideRegion {
 
 
 process FilterKmersOccuringOutsideRegion {
+    label 'DB_creation'
+
     input:
         path(kmers_filtered_dump)
         path(kmers_outside_region_count)
@@ -107,6 +115,7 @@ process FilterKmersOccuringOutsideRegion {
 
 
 process RemoveCommonKmers {
+    label 'DB_creation'
     publishDir "${params.outdir}/", mode: 'copy'
     
     input:
