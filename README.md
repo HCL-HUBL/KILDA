@@ -287,6 +287,7 @@ S5	/path/to/counts/S5.counts
 ```
 
 Each counts file should contain 2 columns (tab delimited): *kmer* and *occurrence*, and can be generated using "jellyfish dump".
+
 ```shell
 k=31
 sample_id="S1"
@@ -311,7 +312,7 @@ GGAGGAAAAGAGCTCTACAAA
 ...
 ```
 
-For the identification of rsids from the kmers (option -r), the input format is (ID reference\_kmer alternative\_kmer), tab-delimited, one rsid per line:
+For the identification of rsids from the kmers (option -r), the input format is (ID reference\_kmer alternative\_kmer), tab-delimited, one rsid per line. See [Generating the variant kmers](#generating-the-variant-kmers) for help with generating this file.
 
 ```
 rs41272114      GATAGACATACGCATTTGGAT   GATAGACATATGCATTTGGAT
@@ -390,3 +391,10 @@ Processing 'C0016B8_1'
 
 For the list of kmers provided here, building them on GRCh37 or GRCh37 did not yield significant differences. When using custom kmer lists, there should be an impact on the KIV2 count only if the normalisation and/or KIV2 regions are different between the two versions.
 
+#### Generating the variant kmers
+
+We wrote a bash script to generate the reference and alternative kmers for use with KILDA: [variant_kmers.sh](./bin/variant_kmers.sh).
+
+You will need to provide the kmer length and the path to the same reference genome as was used for the generation of the kmer DB with kilda.nf. This is [GRCh38](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_47/GRCh38.primary_assembly.genome.fa.gz "GRCh38 primary assembly from GenCode") if you are using the kmer DB provided within this repository.
+
+You will also need to provide the name, position and REF and ALT alleles for the SNP of interest.
