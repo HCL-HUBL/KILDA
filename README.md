@@ -222,7 +222,11 @@ HG00318	/path/to/HG00318_chr6_R1.fastq /path/to/HG00318_chr6_R2.fastq
 HG00304	/path/to/HG00304_chr6_R1.fastq /path/to/HG00304_chr6_R2.fastq
 ```
 
-The rsid file must have one rsid per line, with the variant ID, a tabulation, a kmer representing the reference sequence, a tabulation and a kmer representing the alternative sequence:
+The rsid file must have one rsid per line, with the variant ID, a tabulation, a kmer representing the reference sequence, a tabulation and a kmer representing the alternative sequence. 
+
+This file can be created using the helper script [variant_kmers.sh](./bin/variant_kmers.sh), see the [FAQ](#generating-the-variant-kmers).
+
+*Note*: the variant IDs will only be used to name columns in the output file.
 
 ```
 rs41272114  AACATGATAGACATACGCATTTGGATAGTAT AACATGATAGACATATGCATTTGGATAGTAT
@@ -397,4 +401,4 @@ We wrote a bash script to generate the reference and alternative kmers for use w
 
 You will need to provide the kmer length and the path to the same reference genome as was used for the generation of the kmer DB with kilda.nf. This is [GRCh38](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_47/GRCh38.primary_assembly.genome.fa.gz "GRCh38 primary assembly from GenCode") if you are using the kmer DB provided within this repository.
 
-You will also need to provide the name, position and REF and ALT alleles for the SNP of interest.
+You will also need to provide the name, position and REF and ALT alleles for the SNP of interest. *Note*: the name of the variant will only be used to name columns in the output file.
