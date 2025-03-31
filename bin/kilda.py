@@ -334,6 +334,7 @@ def main():
     # Calculating the CNs for all samples in the list of depth files:
     with open(counts_list_file, "r") as counts_handler:
         with open(str(output_folder)+"/kilda_kiv2.log", "w") as kilda_log:
+            kilda_log.write("ID\tMissing_KIV2_kmers\tTotal_KIV2_kmers\tMissing_Norm_kmers\tTotal_Norm_kmers\tUnkown_kmers\n")
 
             for counts_row in counts_handler: 
                 if(len(counts_row.split("\t")) != 2):
@@ -343,7 +344,6 @@ def main():
                 counts_file = counts_row.split("\t")[1].strip()
                 
                 if(verbose_on): print("Processing '" + str(sample_id) + "'")
-                kilda_log.write("Processing '" + str(sample_id) + "'\n")
                 # Using -1 as a default value (CNs should never be negative)
                 CN = -1
 
@@ -367,11 +367,10 @@ def main():
                 unknown_df = counts_df.loc[counts_df['source'] == "unknown"]
                 
                 if(verbose_on): print("\tKIV2 kmers with 0 counts: "+ str(kiv_counts_df.loc[kiv_counts_df['occurrence'] == 0].shape[0]) + " / " + str(kiv_counts_df.shape[0]))
-                kilda_log.write("\tKIV2 kmers with 0 counts: "+ str(kiv_counts_df.loc[kiv_counts_df['occurrence'] == 0].shape[0]) + " / " + str(kiv_counts_df.shape[0]))
                 if(verbose_on): print("\tNormalisation kmers with 0 counts: "+ str(lpa_counts_df.loc[lpa_counts_df['occurrence'] == 0].shape[0]) + " / " + str(lpa_counts_df.shape[0]))
-                kilda_log.write("\tNormalisation kmers with 0 counts: "+ str(lpa_counts_df.loc[lpa_counts_df['occurrence'] == 0].shape[0]) + " / " + str(lpa_counts_df.shape[0]))
                 if(verbose_on): print("\tUnknown kmers: "+ str(unknown_df.shape[0]))
-                kilda_log.write("\tUnknown kmers: "+ str(unknown_df.shape[0]))
+
+                kilda_log.write(str(sample_id)+"\t"+str(kiv_counts_df.loc[kiv_counts_df['occurrence'] == 0].shape[0])+"\t"+str(kiv_counts_df.shape[0])+"\t"+str(lpa_counts_df.loc[lpa_counts_df['occurrence'] == 0].shape[0])+"\t"+str(lpa_counts_df.shape[0])+"\t"+str(unknown_df.shape[0])+"\n")
 
                 if(kiv_counts_df.shape[0] == 0 or lpa_counts_df.shape[0] == 0):
                     sys.exit("Error, no Normalisation and/or KIV2 kmers found for sample '"+ str(sample_id) +"'")
