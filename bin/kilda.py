@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 
 global VERSION
-VERSION = "1.2.1"
+VERSION = "1.2.2"
 
 
 def print_version():
@@ -333,67 +333,72 @@ def main():
     
     # Calculating the CNs for all samples in the list of depth files:
     with open(counts_list_file, "r") as counts_handler:
-        for counts_row in counts_handler:
-            
-            if(len(counts_row.split("\t")) != 2):
-                sys.exit("Error: the file given to --counts contains '" + str(len(counts_row.split("\t"))) + "' columns. It should only contain two columns (tab-delimited), format: 'id    path/to/kmer_counts.tsv'")
-            
-            sample_id = counts_row.split("\t")[0].strip()
-            counts_file = counts_row.split("\t")[1].strip()
-            
-            if(verbose_on): print("Processing '" + str(sample_id) + "'")
-            # Using -1 as a default value (CNs should never be negative)
-            CN = -1
+        with open(str(output_folder)+"/kilda_kiv2.log", "w") as kilda_log:
 
-            counts_df = read_counts(counts_file)
-            # We add the "kiv", "lpa" and potentially the "rsid" labels to the corresponding kmers:
-            counts_df.loc[:, 'source'] = "unknown"
-            counts_df.loc[counts_df['kmer'].isin(kiv_kmers_df['kmer']), ['source']] = "kiv"
-            counts_df.loc[counts_df['kmer'].isin(lpa_kmers_df['kmer']), ['source']] = "lpa"
-            if not rsids_kmers_df.empty:
-                counts_df.loc[counts_df['kmer'].isin(rsids_kmers_df['kmer_ref']), ['source']] = "snp_ref"
-                counts_df.loc[counts_df['kmer'].isin(rsids_kmers_df['kmer_alt']), ['source']] = "snp_alt"
-                # To take into account the reverse complements of the snp kmers:
-                ref_rc = [rc(x) for x in rsids_kmers_df['kmer_ref']]
-                alt_rc = [rc(x) for x in rsids_kmers_df['kmer_alt']]
-                counts_df.loc[counts_df['kmer'].isin(ref_rc), ['source']] = "snp_ref"
-                counts_df.loc[counts_df['kmer'].isin(alt_rc), ['source']] = "snp_alt"
-            
-            kiv_counts_df = counts_df.loc[counts_df['source'] == "kiv"]
-            lpa_counts_df = counts_df.loc[counts_df['source'] == "lpa"]
-            unknown_df = counts_df.loc[counts_df['source'] == "unknown"]
-            
-            if(verbose_on): print("\tKIV2 kmers with 0 counts: "+ str(kiv_counts_df.loc[kiv_counts_df['occurrence'] == 0].shape[0]) + " / " + str(kiv_counts_df.shape[0]))
-            if(verbose_on): print("\tNormalisation kmers with 0 counts: "+ str(lpa_counts_df.loc[lpa_counts_df['occurrence'] == 0].shape[0]) + " / " + str(lpa_counts_df.shape[0]))
-            if(verbose_on): print("\tUnknown kmers: "+ str(unknown_df.shape[0]))
+            for counts_row in counts_handler: 
+                if(len(counts_row.split("\t")) != 2):
+                    sys.exit("Error: the file given to --counts contains '" + str(len(counts_row.split("\t"))) + "' columns. It should only contain two columns (tab-delimited), format: 'id    path/to/kmer_counts.tsv'")
+                
+                sample_id = counts_row.split("\t")[0].strip()
+                counts_file = counts_row.split("\t")[1].strip()
+                
+                if(verbose_on): print("Processing '" + str(sample_id) + "'")
+                kilda_log.write("Processing '" + str(sample_id) + "'\n")
+                # Using -1 as a default value (CNs should never be negative)
+                CN = -1
 
-            if(kiv_counts_df.shape[0] == 0 or lpa_counts_df.shape[0] == 0):
-                sys.exit("Error, no Normalisation and/or KIV2 kmers found for sample '"+ str(sample_id) +"'")
+                counts_df = read_counts(counts_file)
+                # We add the "kiv", "lpa" and potentially the "rsid" labels to the corresponding kmers:
+                counts_df.loc[:, 'source'] = "unknown"
+                counts_df.loc[counts_df['kmer'].isin(kiv_kmers_df['kmer']), ['source']] = "kiv"
+                counts_df.loc[counts_df['kmer'].isin(lpa_kmers_df['kmer']), ['source']] = "lpa"
+
+                if not rsids_kmers_df.empty:
+                    counts_df.loc[counts_df['kmer'].isin(rsids_kmers_df['kmer_ref']), ['source']] = "snp_ref"
+                    counts_df.loc[counts_df['kmer'].isin(rsids_kmers_df['kmer_alt']), ['source']] = "snp_alt"
+                    # To take into account the reverse complements of the snp kmers:
+                    ref_rc = [rc(x) for x in rsids_kmers_df['kmer_ref']]
+                    alt_rc = [rc(x) for x in rsids_kmers_df['kmer_alt']]
+                    counts_df.loc[counts_df['kmer'].isin(ref_rc), ['source']] = "snp_ref"
+                    counts_df.loc[counts_df['kmer'].isin(alt_rc), ['source']] = "snp_alt"
                 
-            CN = get_kmer_CN(kiv_counts_df, lpa_counts_df, verbose_on)
-            if(verbose_on): print("\tCN = %.2f\n" % CN)
-            
-            if(CN < 0): sys.exit("Error: CN is negative, something went wrong for sample '"+ sample_id +"'")
+                kiv_counts_df = counts_df.loc[counts_df['source'] == "kiv"]
+                lpa_counts_df = counts_df.loc[counts_df['source'] == "lpa"]
+                unknown_df = counts_df.loc[counts_df['source'] == "unknown"]
                 
-            # The keys of values dict will be the kiv2 CN, and the occurrences of the ref and alt kmers:
-            values_dict = {}
-            values_dict['KIV2_CN'] = CN
-            
-            # We add the kemrs to "values_dict" if they exist:
-            if not rsids_kmers_df.empty:
-                for index, row in rsids_kmers_df.iterrows():
-                    # rsid as key, and value is a list of 2 values (the reference occurrences, and the alternative occurrences):
-                    ref_occ, alt_occ = process_rsid(counts_df, row['rsid'], row['kmer_ref'], row['kmer_alt']) 
-                    values_dict[row['rsid']+"_ref"] = ref_occ
-                    values_dict[row['rsid']+"_alt"] = alt_occ
-            
-            samples_dict[sample_id] = values_dict
-            
-            if(plot_on):
-                plot_filename = str(output_folder) + "/plots/" + str(sample_id) + "_cov.pdf"
-                plot_occurrences(kiv_counts_df, lpa_counts_df, plot_filename, sample_id, CN)
+                if(verbose_on): print("\tKIV2 kmers with 0 counts: "+ str(kiv_counts_df.loc[kiv_counts_df['occurrence'] == 0].shape[0]) + " / " + str(kiv_counts_df.shape[0]))
+                kilda_log.write("\tKIV2 kmers with 0 counts: "+ str(kiv_counts_df.loc[kiv_counts_df['occurrence'] == 0].shape[0]) + " / " + str(kiv_counts_df.shape[0]))
+                if(verbose_on): print("\tNormalisation kmers with 0 counts: "+ str(lpa_counts_df.loc[lpa_counts_df['occurrence'] == 0].shape[0]) + " / " + str(lpa_counts_df.shape[0]))
+                kilda_log.write("\tNormalisation kmers with 0 counts: "+ str(lpa_counts_df.loc[lpa_counts_df['occurrence'] == 0].shape[0]) + " / " + str(lpa_counts_df.shape[0]))
+                if(verbose_on): print("\tUnknown kmers: "+ str(unknown_df.shape[0]))
+                kilda_log.write("\tUnknown kmers: "+ str(unknown_df.shape[0]))
+
+                if(kiv_counts_df.shape[0] == 0 or lpa_counts_df.shape[0] == 0):
+                    sys.exit("Error, no Normalisation and/or KIV2 kmers found for sample '"+ str(sample_id) +"'")
+                    
+                CN = get_kmer_CN(kiv_counts_df, lpa_counts_df, verbose_on)
+                if(verbose_on): print("\tCN = %.2f\n" % CN)
                 
-    
+                if(CN < 0): sys.exit("Error: CN is negative, something went wrong for sample '"+ sample_id +"'")
+                    
+                # The keys of values dict will be the kiv2 CN, and the occurrences of the ref and alt kmers:
+                values_dict = {}
+                values_dict['KIV2_CN'] = CN
+                
+                # We add the kmers to "values_dict" if they exist:
+                if not rsids_kmers_df.empty:
+                    for index, row in rsids_kmers_df.iterrows():
+                        # rsid as key, and value is a list of 2 values (the reference occurrences, and the alternative occurrences):
+                        ref_occ, alt_occ = process_rsid(counts_df, row['rsid'], row['kmer_ref'], row['kmer_alt']) 
+                        values_dict[row['rsid']+"_ref"] = ref_occ
+                        values_dict[row['rsid']+"_alt"] = alt_occ
+                
+                samples_dict[sample_id] = values_dict
+                
+                if(plot_on):
+                    plot_filename = str(output_folder) + "/plots/" + str(sample_id) + "_cov.pdf"
+                    plot_occurrences(kiv_counts_df, lpa_counts_df, plot_filename, sample_id, CN)
+                    
     # For each sample, we have a dictionnary corresponding to the columns (as keys).
     # We tranform it into a DataFrame (and transpose it to have the samples as rows):
     samples_df = pd.DataFrame.from_dict(samples_dict).transpose()
