@@ -1,5 +1,7 @@
 # KILDA
 
+[![DOI](https://zenodo.org/badge/905773305.svg)](https://doi.org/10.5281/zenodo.15111514)
+
 ## Introduction 
 
 High concentrations of Lipoprotein(a) is a risk factor for cardiovascular diseases. This concentration is mostly genetically determined by a complex interplay between the number of Kringle-IV type 2 (KIV-2) repeats and Lp(a)-affecting genetic variants.
