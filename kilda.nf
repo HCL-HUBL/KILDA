@@ -33,6 +33,7 @@ params.samplesheet     = ""
 params.kiv2_kmers      = ""
 params.norm_kmers      = ""
 params.rsids_list      = ""
+params.quantiles       = ""
 
 // Checking the params values:
 if(params.kmer_size < 1)                                            error("\nERROR: The kmer size must be > 0 (see config: 'kmer_size')")
@@ -105,6 +106,7 @@ workflow kiv2_counts {
         kiv2_kmers
         norm_kmers
         rsids
+        quantiles
         samplesheet
 
     main:
@@ -116,7 +118,7 @@ workflow kiv2_counts {
         counts_ch = DumpKmers(jelly_kmers_ch).collect()
         counts_list_ch = CreateSampleMap(counts_ch)
         
-        kilda(kiv2_kmers, norm_kmers, counts_list_ch)
+        kilda(kiv2_kmers, norm_kmers, counts_list_ch, quantiles)
 }
 
 
@@ -147,11 +149,17 @@ workflow {
     if(params.count_kiv2) {
         if(params.samplesheet == "")    error("\nERROR: A samplesheet must be provided to count the KIV2 (see config: 'samplesheet')")
 
-        if(params.rsids_list  == "") {
+        if(params.rsids_list == "") {
             rsids_list = []
             println("rsids file not provided, KILDA will not check for variants in the kmers.")
         } else {
             rsids_list = Channel.fromPath(params.rsids_list)
+        }
+
+        if(params.quantiles == "") {
+            quantiles = []
+        } else {
+            quantiles = Channel.fromPath(params.quantiles)
         }
 
         if(params.build_DB == false) {
@@ -166,6 +174,7 @@ workflow {
         kiv2_counts(kiv2_kmers,
                     norm_kmers,
                     rsids_list,
+                    quantiles,
                     Channel.fromPath(params.samplesheet))
     }
 }
