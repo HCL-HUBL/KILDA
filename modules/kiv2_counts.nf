@@ -126,7 +126,7 @@ process kilda {
         set -eo pipefail
 
         ${params.tools.python} ${projectDir}/bin/kilda.py \
-        -c ${counts_list} -o ${kiv2_outdir} -v -p \
+        -c ${counts_list} -o ${kiv2_outdir} -v \
         -k ${kiv2_kmers} -l ${norm_kmers} \
         ${rsid_param} ${q_params}
         """
