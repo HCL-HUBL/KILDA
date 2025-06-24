@@ -16,6 +16,10 @@ This repository contains:
 
  - A standalone Python script for flexible use (*kilda.py*)
 
+How to cite: 
+
+ > Corentin Molitor, Timothy Labidi, Antoine Rimbert, Bertrand Cariou, Mathilde Di Filippo, Claire Bardel, KILDA: identifying KIV-2 repeats from kmers, NAR Genomics and Bioinformatics, Volume 7, Issue 2, June 2025, https://doi.org/10.1093/nargab/lqaf070
+
 ## Table of Contents
 
 1. [Introduction](#introduction)
