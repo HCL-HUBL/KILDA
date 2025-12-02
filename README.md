@@ -1,6 +1,6 @@
 # KILDA
 
-[![DOI](https://zenodo.org/badge/905773305.svg)](https://doi.org/10.5281/zenodo.15111514)
+[![DOI](https://zenodo.org/badge/905773305.svg)](https://zenodo.org/badge/latestdoi/905773305)
 
 ## Introduction 
 
