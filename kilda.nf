@@ -3,19 +3,19 @@
 nextflow.enable.dsl = 2
 
 // Importing processes from the modules:
-include { ExtractFastaFromBed }                 from './modules/kiv2_create_kmers_DB.nf'
-include { CountKmersRegion }                    from './modules/kiv2_create_kmers_DB.nf'
-include { FilterOnOccurence }                   from './modules/kiv2_create_kmers_DB.nf'
-include { CountKmersOutsideRegion }             from './modules/kiv2_create_kmers_DB.nf'
-include { FilterKmersOccuringOutsideRegion }    from './modules/kiv2_create_kmers_DB.nf'
-include { RemoveCommonKmers }                   from './modules/kiv2_create_kmers_DB.nf'
-include { OutputFasta }                         from './modules/kiv2_create_kmers_DB.nf'
+include { ExtractFastaFromBed }                 from './modules/KmerDB/ExtractFastaFromBed'
+include { CountKmersRegion }                    from './modules/KmerDB/CountKmersRegion'
+include { FilterOnOccurence }                   from './modules/KmerDB/FilterOnOccurence'
+include { CountKmersOutsideRegion }             from './modules/KmerDB/CountKmersOutsideRegion'
+include { FilterKmersOccuringOutsideRegion }    from './modules/KmerDB/FilterKmersOccuringOutsideRegion'
+include { RemoveCommonKmers }                   from './modules/KmerDB/RemoveCommonKmers'
+include { OutputFasta }                         from './modules/KmerDB/OutputFasta'
 
-include { CreateFastaKmers }                    from './modules/kiv2_counts.nf'
-include { CountKmers }                          from './modules/kiv2_counts.nf'
-include { DumpKmers }                           from './modules/kiv2_counts.nf'
-include { CreateSampleMap }                     from './modules/kiv2_counts.nf'
-include { kilda }                               from './modules/kiv2_counts.nf'
+include { CreateFastaKmers }                    from './modules/Kiv2Counts/CreateFastaKmers'
+include { CountKmers }                          from './modules/Kiv2Counts/CountKmers'
+include { DumpKmers }                           from './modules/Kiv2Counts/DumpKmers'
+include { CreateSampleMap }                     from './modules/Kiv2Counts/CreateSampleMap'
+include { kilda }                               from './modules/Kiv2Counts/kilda'
 
 // Initialising the options with default values:
 kilda_dir              = "${projectDir}" // projectDir: directory where the main script is located
