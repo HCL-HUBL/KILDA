@@ -1,0 +1,7 @@
+kiv2_20240530_0.2.sif
+kiv2_20261009-0.3.sif
+confs/kilda_SLURM.conf
+test_dataset/results/
+test_dataset/.nextflow.log
+test_dataset/work/
+test_dataset/.nextflow/

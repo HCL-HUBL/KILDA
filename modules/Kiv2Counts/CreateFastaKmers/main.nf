@@ -3,6 +3,9 @@ process CreateFastaKmers {
 
     label 'kiv2Counts'
 
+    errorStrategy = 'retry'
+    maxRetries = 3
+    
     cpus 1
     memory { 1.GB * task.attempt }
     time { 1.hour * task.attempt }

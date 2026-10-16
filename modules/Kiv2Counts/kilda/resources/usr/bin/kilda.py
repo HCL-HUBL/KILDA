@@ -252,8 +252,9 @@ def get_kmer_CN(kiv_counts, lpa_counts, verbose_on):
     Returns:
         The CN as a float.
     """
-    kiv_mean = kiv_counts['occurrence'].mean()
-    lpa_mean = lpa_counts['occurrence'].mean()
+    # Computing the mean on "on-zero occurence" kmers:
+    kiv_mean = kiv_counts.loc[kiv_counts['occurrence'] != 0].mean()
+    lpa_mean = lpa_counts.loc[lpa_counts['occurrence'] != 0].mean()
 
     if(verbose_on): print("\tKIV2 mean kmer occurrence:'%.2f'" % kiv_mean)
     if(verbose_on): print("\tNormalisation mean kmer occurrence:'%.2f'" % lpa_mean)

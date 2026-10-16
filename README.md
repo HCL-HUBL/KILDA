@@ -58,7 +58,7 @@ The following needs to be installed on your machine:
 
 The rest of the dependencies, available in our Singularity image, are listed below: 
 
-- **jellyfish** (tested with v2.2.10)
+- **jellyfish** (tested with v2.3.1)
 
 - **samtools**  (tested with v1.19)
 
@@ -68,11 +68,11 @@ The rest of the dependencies, available in our Singularity image, are listed bel
 
 - **The following python packages:** pandas, numpy, matplotlib (note: the following packages should be available by default: getopt, sys, os, warnings)
 
-You can build the image using the recipe provided in this repository [kiv2_20240530.def](./kiv2_20240530.def) with Apptainer or Singularity:
+You can build the image using the recipe provided in this repository [kiv2_20261008.def](./kiv2_20261008.def) with Apptainer or Singularity:
 
 ```shell
-apptainer build kiv2_20240530_0.2.sif kiv2_20240530.def # with apptainer
-singularity build kiv2_20240530_0.2.sif kiv2_20240530.def  # with singularity
+apptainer build kiv2_20261009-0.3.sif kiv2_20261008.def # with apptainer
+singularity build kiv2_20261009-0.3.sif kiv2_20261008.def  # with singularity
 ```
 
 ## Test Dataset
@@ -82,7 +82,7 @@ A test dataset is available under [./test_dataset/](./test_dataset), it can be l
 ```shell
 cd /path/to/kilda/
 
-apptainer build kiv2_20240530_0.2.sif kiv2_20240530.def
+apptainer build kiv2_20261009-0.3.sif kiv2_20261008.def
 
 cd ./test_dataset/
 
@@ -119,7 +119,7 @@ First, move to KILDA's installation directory and build the Apptainer image:
 
 ```shell
 cd /path/to/kilda/
-apptainer build kiv2_20240530_0.2.sif kiv2_20240530.def
+apptainer build kiv2_20261009-0.3.sif kiv2_20261008.def
 ```
 
 Then:
@@ -282,7 +282,7 @@ Other:
 You can run it from within the image:
 
 ```shell
-apptainer exec kiv2_20240530_0.2.sif ./bin/kilda.py 
+apptainer exec kiv2_20261009-0.3.sif ./bin/kilda.py 
 ```
 
 #### Input

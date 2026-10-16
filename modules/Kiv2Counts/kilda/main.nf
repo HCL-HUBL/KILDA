@@ -4,6 +4,9 @@ process kilda {
     
     label 'kiv2Counts'
 
+    errorStrategy = 'retry'
+    maxRetries = 3
+    
     cpus 1
     memory { 10.GB * task.attempt }
     time { 2.hour * task.attempt }

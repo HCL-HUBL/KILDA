@@ -4,6 +4,9 @@ process DumpKmers {
 
     label 'kiv2Counts'
 
+    errorStrategy = 'retry'
+    maxRetries = 3
+    
     cpus 1
     memory { 10.GB * task.attempt }
     time { 1.hour * task.attempt }
