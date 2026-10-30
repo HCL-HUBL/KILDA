@@ -1,0 +1,7 @@
+{
+  "scope": "Software arithmetic references frozen before patch evaluation; no biological labels.",
+  "no_zeros": {"kiv": [10, 20], "normalization": [2, 4], "nonzero_cn": 10, "inclusive_cn": 10},
+  "unequal_zero_fractions": {"kiv": [0, 10, 20], "normalization": [0, 0, 2, 4], "nonzero_cn": 10, "inclusive_cn": 13.333333333333334},
+  "metadata": "Adding a numeric metadata column must not alter the occurrence-only result.",
+  "empty_or_all_zero": "A nonzero mean is undefined. Record behavior separately; do not interpret NaN as a valid count or silently redesign error handling."
+}
