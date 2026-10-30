@@ -253,14 +253,14 @@ def get_kmer_CN(kiv_counts, lpa_counts, verbose_on):
         The CN as a float.
     """
     # Computing the mean on "on-zero occurence" kmers:
-    kiv_mean = kiv_counts.loc[kiv_counts['occurrence'] != 0].mean()
-    lpa_mean = lpa_counts.loc[lpa_counts['occurrence'] != 0].mean()
+    kiv_mean = kiv_counts.loc[kiv_counts['occurrence'] != 0, 'occurrence'].mean()
+    lpa_mean = lpa_counts.loc[lpa_counts['occurrence'] != 0, 'occurrence'].mean()
 
     if(verbose_on): print("\tKIV2 mean kmer occurrence:'%.2f'" % kiv_mean)
     if(verbose_on): print("\tNormalisation mean kmer occurrence:'%.2f'" % lpa_mean)
 
-    if(kiv_mean == 0 or lpa_mean == 0):
-        sys.exit("Error: the mean occurrence for the KIV2 or Normalisation kmers is 0: cannot get the ratio.")
+    if(pd.isna(kiv_mean) or pd.isna(lpa_mean) or kiv_mean == 0 or lpa_mean == 0):
+        sys.exit("Error: the mean occurrence for the KIV2 or Normalisation kmers is 0 or undefined: cannot get the ratio.")
     # lpa_mean represents the "coverage" on one copy, but we are interested in the copy number on two copies, so *2
     return (kiv_mean / lpa_mean * 2)
     
